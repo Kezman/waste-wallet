@@ -4,9 +4,13 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import './styles.css'
 
+// На GitHub Pages приложение живёт в подпапке /<repo>/, локально — в корне.
+// Vite подставляет правильное значение через base, роутеру нужно то же самое без хвостового слэша.
+const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/'
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename={basename}>
       <App />
     </BrowserRouter>
   </StrictMode>,
