@@ -1,6 +1,6 @@
 /**
  * Скриншот через CDP с точной эмуляцией вьюпорта.
- * node scripts/cdp-shot.mjs <url> <out.png> [width] [height] [mobile:0|1]
+ * node scripts/cdp-shot.mjs <url> <out.png> [width] [height] [mobile:0|1] [theme:light|dark]
  */
 import { writeFileSync } from 'node:fs'
 
@@ -33,7 +33,7 @@ class Cdp {
 }
 
 async function main() {
-  const [url, out, width = '390', height = '1600', mobile = '1'] = process.argv.slice(2)
+  const [url, out, width = '390', height = '1600', mobile = '1', theme = ''] = process.argv.slice(2)
   const targets = await (await fetch(`http://127.0.0.1:${PORT}/json/list`)).json()
   const page = targets.find((target) => target.type === 'page')
   if (!page) throw new Error('нет открытой вкладки')
@@ -56,8 +56,18 @@ async function main() {
   await cdp.send('Page.navigate', { url })
   await wait(2200)
 
+  if (theme === 'light' || theme === 'dark') {
+    await cdp.send('Runtime.evaluate', {
+      expression: `localStorage.setItem('wallet-theme', '${theme}')`,
+      returnByValue: true,
+    })
+    await cdp.send('Page.reload')
+    await wait(2400)
+  }
+
   const metrics = await cdp.send('Runtime.evaluate', {
-    expression: '`${document.documentElement.clientWidth}x${document.documentElement.clientHeight} scroll=${document.documentElement.scrollWidth}`',
+    expression:
+      '`${document.documentElement.clientWidth}x${document.documentElement.clientHeight} scroll=${document.documentElement.scrollWidth} theme=${document.documentElement.dataset.theme}`',
     returnByValue: true,
   })
   console.log('viewport:', metrics.result.value)

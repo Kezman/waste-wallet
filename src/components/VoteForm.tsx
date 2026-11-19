@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import clsx from 'clsx'
 import { useAppStore, VOTE_MIN_LENGTH } from '../lib/store'
+import { Icon } from './Icon'
 import type { Decision } from '../lib/types'
 
 const PROMPTS = [
@@ -38,78 +39,81 @@ export function VoteForm({ requestId }: VoteFormProps) {
 
   return (
     <div>
-      <div className="flex gap-2">
+      <div className="grid grid-cols-2 gap-2">
         <button
           type="button"
           onClick={() => setDecision('approve')}
-          className={clsx('btn btn--wide', decision === 'approve' && 'btn--approve')}
+          className={clsx('btn btn--wide', decision === 'approve' && 'btn--ok')}
           aria-pressed={decision === 'approve'}
         >
+          <Icon name="check" className="h-4 w-4" />
           Одобрить
         </button>
         <button
           type="button"
           onClick={() => setDecision('reject')}
-          className={clsx('btn btn--wide', decision === 'reject' && 'btn--reject')}
+          className={clsx('btn btn--wide', decision === 'reject' && 'btn--bad')}
           aria-pressed={decision === 'reject'}
         >
+          <Icon name="x" className="h-4 w-4" />
           Отклонить
         </button>
       </div>
 
-      <label htmlFor="vote-text" className="label mt-4 block">
-        Обоснование — обязательно
-      </label>
-      <textarea
-        id="vote-text"
-        value={text}
-        onChange={(event) => setText(event.target.value)}
-        rows={4}
-        placeholder="Напишите, почему вы за или против. Без аргумента голос не принимается."
-        className="textarea mt-1.5"
-        maxLength={600}
-      />
-
-      <div className="mt-1.5 flex items-center justify-between gap-2">
-        <div className="flex flex-wrap gap-1">
-          {PROMPTS.map((prompt) => (
-            <button
-              key={prompt}
-              type="button"
-              onClick={() =>
-                setText((current) => (current.trim().length === 0 ? `${prompt}. ` : `${current.trimEnd()} ${prompt}. `))
-              }
-              className="chip !px-2 !py-1 !text-[9.5px] !normal-case !tracking-normal"
-            >
-              {prompt}
-            </button>
-          ))}
-        </div>
+      <div className="mt-4 flex items-baseline justify-between gap-2">
+        <label htmlFor="vote-text" className="label">
+          Обоснование — обязательно
+        </label>
         <span
           className={clsx(
-            'num shrink-0 text-[11px]',
-            tooShort ? 'text-ink-soft/70' : 'text-approve',
+            'num text-[11px] font-medium',
+            tooShort ? 'text-muted' : 'text-ok',
           )}
         >
           {trimmed.length}/{VOTE_MIN_LENGTH}
         </span>
       </div>
 
+      <textarea
+        id="vote-text"
+        value={text}
+        onChange={(event) => setText(event.target.value)}
+        rows={4}
+        placeholder="Почему вы за или против? Без аргумента голос не принимается."
+        className="textarea mt-1.5"
+        maxLength={600}
+      />
+
+      <div className="mt-2 flex flex-wrap gap-1.5">
+        {PROMPTS.map((prompt) => (
+          <button
+            key={prompt}
+            type="button"
+            onClick={() =>
+              setText((current) =>
+                current.trim().length === 0 ? `${prompt}. ` : `${current.trimEnd()} ${prompt}. `,
+              )
+            }
+            className="rounded-full bg-surface2 px-2.5 py-1 text-[11px] font-medium text-muted transition-colors hover:text-ink"
+          >
+            {prompt}
+          </button>
+        ))}
+      </div>
+
       {error && (
-        <p className="mt-3 border-l-2 border-stamp bg-stamp/5 px-2 py-1.5 text-[12px] text-stamp">
-          {error}
-        </p>
+        <p className="mt-3 rounded-lg bg-badsoft px-3 py-2 text-[12px] font-medium text-bad">{error}</p>
       )}
 
       <button
         type="button"
         onClick={submit}
         disabled={tooShort || busy}
-        className="btn btn--solid mt-3 w-full"
+        className="btn btn--primary mt-3 h-11 w-full"
       >
         {busy ? 'Отправляем…' : 'Подписать и отправить'}
       </button>
-      <p className="mt-2 text-center text-[10.5px] text-ink-soft/80">
+      <p className="mt-2 text-center text-[11px] text-muted">
         Голос нельзя отозвать — как и подпись под документом.
       </p>
     </div>

@@ -21,7 +21,7 @@ export default function App() {
       <ScrollToTop />
       <Header />
 
-      <main className="mx-auto w-full max-w-5xl flex-1 px-4 pb-16 pt-5 sm:px-6 sm:pt-6">
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-20 pt-5 sm:px-6 sm:pt-6">
         <Routes>
           <Route path="/" element={<FeedPage />} />
           <Route path="/request/:id" element={<RequestPage />} />
@@ -31,16 +31,14 @@ export default function App() {
         </Routes>
       </main>
 
-      <footer className="no-print mt-4 border-t border-rule/80">
-        <div className="mx-auto flex w-full max-w-5xl flex-col gap-1.5 px-4 py-5 text-[11px] text-ink-soft sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <span>
-            Демо-прототип «Кошелёк, подожди» · без сервера, данные в вашем браузере
-          </span>
-          <div className="flex items-center gap-3">
-            <Link to="/?dev=1" className="link-underline">
+      <footer className="no-print border-t border-line">
+        <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 px-4 py-6 text-[11.5px] text-muted sm:flex-row sm:items-center sm:justify-between sm:px-6">
+          <span>Демо-прототип «Кошелёк, подожди» · без сервера, данные в вашем браузере</span>
+          <div className="flex items-center gap-4">
+            <Link to="/?dev=1" className="link underline-offset-2 hover:underline">
               демо-панель
             </Link>
-            <span className="text-ink-soft/50">v0.1</span>
+            <span className="text-muted/60">v0.2</span>
           </div>
         </div>
       </footer>
